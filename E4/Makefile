@@ -1,23 +1,21 @@
-.SUFFIXES:
+SRCDIR  := src
+BLDDIR  := build
+SRCS    := $(wildcard $(SRCDIR)/*.c)
+OBJS    := $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%.o,$(SRCS))
+TGTS    := $(patsubst $(SRCDIR)/%.c,$(BLDDIR)/%,$(SRCS))
 
-CC	:=gcc
-CFLAGS	:=-Wall
-LDFLAGS	:=
-RM	:=rm -f
+all: $(TGTS)
 
-all:ex1
-
-.PHONY:all clean
-
-ex1:ex1.o
+$(BLDDIR)/%: $(BLDDIR)/%.o
+	@mkdir -p $(BLDDIR)
 	$(CC) $(LDFLAGS) -o $@ $<
-	@echo ">>> Build success: $@"
+	@echo ">>>  Build success: $@"
 
-DEPFLAGS=-MMD -MP
-%.o:%.c
+$(BLDDIR)/%.o: $(SRCDIR)/%.c
+	@mkdir -p $(BLDDIR)
 	$(CC) $(CFLAGS) $(DEPFLAGS) -c $< -o $@
 
--include ex1.d
-
 clean:
-	$(RM) ex1 ex1.o ex1.d
+	$(RM) -r $(BLDDIR)
+
+.PHONY: all clean
