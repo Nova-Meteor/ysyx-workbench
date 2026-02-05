@@ -6,19 +6,19 @@
 // #include <assert.h>
 #include <nvboard.h>
 
-static TOP_NAME dut;
+static TOP_NAME top;
 
-void nvboard_bind_all_pins(TOP_NAME* dut);
+void nvboard_bind_all_pins(Vlight* top);
 
 static void single_cycle() {
-  dut.clk = 0; dut.eval();
-  dut.clk = 1; dut.eval();
+  top.clk = 0; top.eval();
+  top.clk = 1; top.eval();
 }
 
 static void reset(int n) {
-  dut.rst = 1;
+  top.rst = 1;
   while (n -- > 0) single_cycle();
-  dut.rst = 0;
+  top.rst = 0;
 }
 
 int main(int argc, char** argv) {
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
   // top->trace(tfp, 99);
   // tfp->open("./obj_dir/simx.fst");
 
-  nvboard_bind_all_pins(&dut);
+  nvboard_bind_all_pins(top);
   nvboard_init();
 
   reset(10);
