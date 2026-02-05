@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
   Verilated::traceEverOn(true);
   VerilatedFstC* tfp = new VerilatedFstC;
   top->trace(tfp, 99);
-  tfp->open("simx.fst");
+  tfp->open("./obj_dir/simx.fst");
 
   while (contextp->time() < 20 && !contextp->gotFinish()) {
     int a = rand() & 1;
