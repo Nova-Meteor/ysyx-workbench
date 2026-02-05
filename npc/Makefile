@@ -3,8 +3,8 @@ VERILATOR = verilator
 
 VERILATOR_FLAGS = -Wall --cc --exe --build -j 0 --trace-fst
 
-VSRCS = $(shell find ./vsrc -name "*.v")
-CSRCS = $(shell find ./csrc -name "*.cpp")
+VSRCS = $(shell find ./vsrc/$(TOPNAME).v)
+CSRCS = $(shell find ./csrc/$(TOPNAME).cpp)
 
 all:
 	@echo "Please specify a target (sim/wave/clean)"
