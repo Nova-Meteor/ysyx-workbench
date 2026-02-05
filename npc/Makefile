@@ -1,6 +1,6 @@
 TOPNAME = switch
-NXDC_FILES = constr/switch.nxdc
-BUILD_DIR = ./build
+NXDC_FILES = $(TOPNAME)/constr/switch.nxdc
+BUILD_DIR = $(TOPNAME)/build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
@@ -10,9 +10,9 @@ VERILATOR_CFLAGS += -MMD --build -cc \
 
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
-INC_PATH += $(abspath ./inc)
-VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
-CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
+INC_PATH += $(abspath ./$(TOPNAME)/inc)
+VSRCS = $(shell find $(abspath ./$(TOPNAME)/vsrc) -name "*.v")
+CSRCS = $(shell find $(abspath ./$(TOPNAME)/csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
 $(SRC_AUTO_BIND): $(NXDC_FILES)
