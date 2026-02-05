@@ -1,5 +1,5 @@
-TOPNAME = switch
-NXDC_FILES = $(TOPNAME)/constr/switch.nxdc
+TOPNAME = light
+NXDC_FILES = $(TOPNAME)/constr/$(TOPNAME).nxdc
 BUILD_DIR = $(TOPNAME)/build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
 BIN = $(BUILD_DIR)/$(TOPNAME)
