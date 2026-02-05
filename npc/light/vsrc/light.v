@@ -10,14 +10,14 @@ module light(
     begin
       if (rst)
         begin
-          led <= 1;
-          count <= 0;
+          led <= 16'b1;
+          count <= 32'd0;
         end
       else
         begin
-          if (count == 0)
+          if (count == 32'd0)
             led <= {led[14:0], led[15]};
-          count <= (count >= 5000000 ? 32'b0 : count + 1);
+          count <= (count >= 32'd5000000 ? 32'd0 : count + 32'd1);
         end
     end
 
