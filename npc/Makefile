@@ -1,25 +1,45 @@
 TOPNAME = switch
+NXDC_FILES = constr/switch.nxdc
+BUILD_DIR = ./build
+OBJ_DIR = $(BUILD_DIR)/obj_dir
+BIN = $(BUILD_DIR)/$(TOPNAME)
+
 VERILATOR = verilator
+VERILATOR_CFLAGS += -MMD --build -cc \
+                -O3 --x-assign fast --x-initial fast --noassert
 
-VERILATOR_FLAGS = -Wall --cc --exe --build -j 0 --trace-fst
+include $(NVBOARD_HOME)/scripts/nvboard.mk
 
-VSRCS = $(shell find ./vsrc/$(TOPNAME).v)
-CSRCS = $(shell find ./csrc/$(TOPNAME).cpp)
+INC_PATH += $(abspath ./inc)
+VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
+CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 
-all:
-	@echo "Please specify a target (sim/wave/clean)"
+SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	@mkdir -p $(BUILD_DIR)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
-sim:
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "--- VERILATOR BUILDING ---"
-	$(VERILATOR) $(VERILATOR_FLAGS) $(VSRCS) $(CSRCS)
-	@echo "--- SIMULATION RUNNING ---"
-	./obj_dir/V$(TOPNAME)
+CSRCS += $(SRC_AUTO_BIND)
 
-wave:
-	gtkwave simx.fst
+INCFLAGS = $(addprefix -I, $(INC_PATH))
+CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+
+all: sim
+
+$(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
+	@rm -rf $(OBJ_DIR)
+	$(VERILATOR) $(VERILATOR_CFLAGS) \
+		--top-module $(TOPNAME) $^ \
+		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+
+sim: $(BIN)
+	$(call git_commit, "sim RTL") # 一生一芯进度追踪，请勿删除
+	@echo "--- RUNNING NVBOARD ---"
+	$(BIN)
 
 clean:
-	rm -rf obj_dir *.fst
+	rm -rf $(BUILD_DIR)
 
+.PHONY: all sim clean
 include ../Makefile

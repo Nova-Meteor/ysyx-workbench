@@ -4,29 +4,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <nvboard.h>
+
+void nvboard_bind_all_pins(Vswitch* top);
 
 int main(int argc, char** argv) {
   VerilatedContext* contextp = new VerilatedContext;
   contextp->commandArgs(argc, argv);
   Vswitch* top = new Vswitch{contextp};
 
-  Verilated::traceEverOn(true);
-  VerilatedFstC* tfp = new VerilatedFstC;
-  top->trace(tfp, 99);
-  tfp->open("./obj_dir/simx.fst");
+  // Verilated::traceEverOn(true);
+  // VerilatedFstC* tfp = new VerilatedFstC;
+  // top->trace(tfp, 99);
+  // tfp->open("./obj_dir/simx.fst");
 
-  while (contextp->time() < 20 && !contextp->gotFinish()) {
-    int a = rand() & 1;
-    int b = rand() & 1;
-    top->a = a;
-    top->b = b;
+  nvboard_bind_all_pins(top);
+  nvboard_init();
+
+  // while (contextp->time() < 20 && !contextp->gotFinish()) {
+  while (!contextp->gotFinish()) {
+    // int a = rand() & 1;
+    // int b = rand() & 1;
+    // top->a = a;
+    // top->b = b;
+    // top->eval();
+    // tfp->dump(contextp->time());
+    // contextp->timeInc(1);
+    // printf("a = %d, b = %d, f = %d\n", a, b, top->f);
+    // assert(top->f == (a ^ b));
+    nvboard_update();
     top->eval();
-    tfp->dump(contextp->time());
-    contextp->timeInc(1);
-    printf("a = %d, b = %d, f = %d\n", a, b, top->f);
-    assert(top->f == (a ^ b));
   }
-  tfp->close();
+  // tfp->close();
+  nvboard_quit();
   delete top;
   delete contextp;
   return 0;
