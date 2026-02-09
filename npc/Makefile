@@ -38,8 +38,12 @@ sim: $(BIN)
 	@echo "--- RUNNING NVBOARD ---"
 	$(BIN)
 
+lint:
+	$(VERILATOR) --lint-only -Wall $(VSRCS)
+	@echo "Lint check passed!"
+
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all sim clean
+.PHONY: all sim clean lint
 include ../Makefile
