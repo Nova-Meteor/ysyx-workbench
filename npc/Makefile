@@ -1,4 +1,4 @@
-TOPNAME = encode42
+TOPNAME = pri_encode42
 NXDC_FILES = $(TOPNAME)/constr/$(TOPNAME).nxdc
 BUILD_DIR = $(TOPNAME)/build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
