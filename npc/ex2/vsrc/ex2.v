@@ -1,6 +1,6 @@
 module ex2(
     input [8:0] sw,      // SW[7:0] 为输入, SW[8] 为使能
-    output [3:0] led,    // LED[2:0] 为编码结果, LED[4] 为指示位
+    output [3:0] led,    // LED[2:0] 为编码结果, LED[3] 为指示位
     output [7:0] seg0    // 数码管 HEX0
   );
 
