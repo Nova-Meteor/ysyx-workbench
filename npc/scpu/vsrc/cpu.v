@@ -1,11 +1,16 @@
 module cpu(
     input clk,
     input rst,
-    output reg [7:0] out_val
+    output reg [7:0] out_val,
+    output [3:0] debug_pc,
+    output [7:0] debug_r2
   );
 
   reg [3:0] pc;
   reg [7:0] inst;
+
+  assign debug_pc = pc;
+  assign debug_r2 = rf[2];
 
   // 1. 指令存储器 (IMEM)
   // 放入你提供的汇编机器码
