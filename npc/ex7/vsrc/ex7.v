@@ -4,6 +4,7 @@ module ex7(
     input ps2_clk,
     input ps2_data,
     output VGA_CLK,
+    output [15:0] led,
     output [7:0] seg0, seg1, seg2, seg3, seg4, seg5
   );
 
@@ -22,14 +23,17 @@ module ex7(
                );
 
   // 状态定义
-  localparam STATE_IDLE    = 2'b00; // 等待按下
-  localparam STATE_PRESSED = 2'b01; // 已按下，忽略重复码
-  localparam STATE_WAIT_F0 = 2'b10; // 收到 F0，等待紧跟的释放码
+  localparam STATE_IDLE    = 2'b00;
+  localparam STATE_WAIT_F0 = 2'b10;
 
   reg [1:0] state;
   reg [7:0] cur_scancode;
   reg [7:0] count;
   reg is_pressed;
+
+  // --- 组合键标志位 ---
+  reg shift_on;
+  reg ctrl_on;
 
   always @(posedge clk)
     begin
@@ -45,42 +49,51 @@ module ex7(
           case (state)
             STATE_IDLE:
               begin
-                if (kbd_data != 8'hF0)
-                  begin
-                    state <= STATE_PRESSED;
-                    cur_scancode <= kbd_data;
-                    count <= count + 1'b1; // 只有从 IDLE 进入 PRESSED 才计数
-                    is_pressed <= 1'b1;
-                  end
-                else
-                  begin
-                    state <= STATE_IDLE;
-                  end
-              end
-            STATE_PRESSED:
-              begin
                 if (kbd_data == 8'hF0)
                   begin
                     state <= STATE_WAIT_F0;
                   end
+                else if (kbd_data == 8'h12 || kbd_data == 8'h59)
+                  begin
+                    shift_on <= 1'b1;
+                  end
+                else if (kbd_data == 8'h14)
+                  begin
+                    ctrl_on <= 1'b1;
+                  end
                 else
                   begin
-                    state <= STATE_PRESSED;
+                    state <= STATE_IDLE;
+                    cur_scancode <= kbd_data;
+                    count <= count + 1'b1;
+                    is_pressed <= 1'b1;
                   end
-                // 如果收到的是重复的通码，保持在 PRESSED 状态，不计数
               end
             STATE_WAIT_F0:
               begin
-                // 收到 F0 后的下一个码，代表彻底松开
+                if (kbd_data == 8'h12 || kbd_data == 8'h59)
+                  begin
+                    shift_on <= 1'b0; // Shift 松开
+                  end
+                else if (kbd_data == 8'h14)
+                  begin
+                    ctrl_on <= 1'b0;  // CTRL 松开
+                  end
+                else if (kbd_data == cur_scancode)
+                  begin
+                    is_pressed <= 1'b0; // 当前显示的功能键松开
+                  end
                 state <= STATE_IDLE;
-                is_pressed <= 1'b0;
-                cur_scancode <= 8'h00;
               end
             default:
               state <= STATE_IDLE;
           endcase
         end
     end
+
+  assign led[0] = shift_on;
+  assign led[1] = ctrl_on;
+  assign led[15:2] = 14'b0;
 
   // ASCII 转换
   wire [7:0] cur_ascii;
