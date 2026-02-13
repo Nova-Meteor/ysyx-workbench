@@ -24,7 +24,7 @@ module ex2(
   assign led[2:0] = encode_out;
   assign led[3] = indicator;
 
-  bcd7seg my_seg(
+  bcd7seg my_seg0(
             .b({1'b0, encode_out}),
             .h(seg0)
           );
