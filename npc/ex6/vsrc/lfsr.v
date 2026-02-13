@@ -1,6 +1,6 @@
 module lfsr(
     input clk,
-    input reset,
+    input reset_n,
     output reg [7:0] q
   );
 
@@ -10,7 +10,7 @@ module lfsr(
 
   always @(posedge clk)
     begin
-      if (reset)
+      if (!reset_n)
         begin
           q <= 8'h01;
         end
