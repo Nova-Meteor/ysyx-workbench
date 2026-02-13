@@ -45,7 +45,7 @@ module cpu(
   reg [7:0] rf [3:0];
 
   // 3. 执行与写回
-  always @(posedge clk)
+  always @(posedge clk or posedge rst)
     begin
       if (rst)
         begin
