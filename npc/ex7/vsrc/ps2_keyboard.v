@@ -20,7 +20,7 @@ module ps2_keyboard(
 
   always @(posedge clk)
     begin
-      if (!resetn)
+      if (resetn == 0)
         begin
           count <= 0;
           ready <= 0;
