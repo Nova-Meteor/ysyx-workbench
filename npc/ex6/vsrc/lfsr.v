@@ -1,6 +1,6 @@
 module lfsr(
     input clk,
-    input reset_n,
+    input reset,
     output reg [7:0] q
   );
 
@@ -8,9 +8,9 @@ module lfsr(
 
   assign feedback = q[4] ^ q[3] ^ q[2] ^ q[0];
 
-  always @(posedge clk or negedge reset_n)
+  always @(posedge clk or posedge reset)
     begin
-      if (!reset_n)
+      if (reset)
         begin
           q <= 8'h01;
         end

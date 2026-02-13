@@ -9,7 +9,7 @@ module ex6(
 
   lfsr my_lfsr(
          .clk(btn_clk),
-         .reset_n(btn_reset),
+         .reset(btn_reset),
          .q(random_val)
        );
 
