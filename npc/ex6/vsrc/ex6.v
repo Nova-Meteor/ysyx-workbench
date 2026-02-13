@@ -1,6 +1,6 @@
 module ex6(
     input btn_clk,        // 按钮作为时钟信号
-    input btn_reset,       // 按钮作为复位信号
+    input btn_reset,      // 按钮作为复位信号
     output [7:0] seg1,    // 数码管1 (显示高4位)
     output [7:0] seg0     // 数码管0 (显示低4位)
   );
