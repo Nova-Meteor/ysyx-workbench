@@ -63,9 +63,12 @@ module ex7(
                   end
                 else
                   begin
+                    if (kbd_data != cur_scancode || !is_pressed)
+                      begin
+                        count <= count + 1'b1;
+                      end
                     state <= STATE_IDLE;
                     cur_scancode <= kbd_data;
-                    count <= count + 1'b1;
                     is_pressed <= 1'b1;
                   end
               end
