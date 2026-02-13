@@ -12,7 +12,7 @@ module lfsr(
     begin
       if (!reset_n)
         begin
-          q <= 8'h02;
+          q <= 8'h01;
         end
       else
         begin
