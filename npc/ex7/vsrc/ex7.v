@@ -43,6 +43,8 @@ module ex7(
           cur_scancode <= 8'h00;
           count <= 8'h00;
           is_pressed <= 1'b0;
+          shift_on <= 1'b0;
+          ctrl_on <= 1'b0;
         end
       else if (kbd_ready)
         begin
@@ -99,8 +101,12 @@ module ex7(
   assign led[15:2] = 14'b0;
 
   // ASCII 转换
-  wire [7:0] cur_ascii;
-  scancode_to_ascii my_map(cur_scancode, cur_ascii);
+  wire [7:0] raw_ascii;
+  scancode_to_ascii my_map(cur_scancode, raw_ascii);
+
+  wire [7:0] final_ascii = (raw_ascii >= 8'h41 && raw_ascii <= 8'h5A)
+       ? (shift_on ? raw_ascii : raw_ascii + 8'h20)
+       : raw_ascii;
 
   // --- 显示控制逻辑 ---
   // 高两位 (seg5, 4): 显示 count
@@ -116,8 +122,8 @@ module ex7(
 
   bcd7seg seg_5(count[7:4], seg5);
   bcd7seg seg_4(count[3:0], seg4);
-  bcd7seg seg_3(cur_ascii[7:4], h3_raw);
-  bcd7seg seg_2(cur_ascii[3:0], h2_raw);
+  bcd7seg seg_3(final_ascii[7:4], h3_raw);
+  bcd7seg seg_2(final_ascii[3:0], h2_raw);
   bcd7seg seg_1(cur_scancode[7:4], h1_raw);
   bcd7seg seg_0(cur_scancode[3:0], h0_raw);
 
