@@ -8,11 +8,11 @@ module lfsr(
 
   assign feedback = q[4] ^ q[3] ^ q[2] ^ q[0];
 
-  always @(posedge clk)
+  always @(posedge clk or negedge reset_n)
     begin
       if (!reset_n)
         begin
-          q <= 8'h01;
+          q <= 8'h02;
         end
       else
         begin
