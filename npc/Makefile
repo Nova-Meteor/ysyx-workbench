@@ -1,4 +1,4 @@
-TOPNAME = ex8
+TOPNAME = scpu
 NXDC_FILES = $(TOPNAME)/constr/$(TOPNAME).nxdc
 BUILD_DIR = $(TOPNAME)/build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
