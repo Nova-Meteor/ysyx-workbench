@@ -44,13 +44,18 @@ module vmem(
     output [23:0] vga_data
   );
 
-  reg [23:0] vga_mem [1048575:0];
+  // 优化：内存深度减小为实际像素数 (582 * 535 = 311,370)
+  // reg [23:0] vga_mem [1048575:0];
+  reg [23:0] vga_mem [311369:0];
 
   initial
     begin
       $readmemh("/home/wiki/ysyx/npc/ex8/resource/ysyx.hex", vga_mem);
     end
 
-  assign vga_data = vga_mem[{h_addr, v_addr}];
+  // 优化：使用线性索引。FPGA 综合器通常会自动将乘法优化为加法和移位的组合。
+  // assign vga_data = vga_mem[{h_addr, v_addr}];
+  // 关键：将索引计算扩展到 19 位，防止地址溢出截断
+  assign vga_data = vga_mem[{{22{1'b0}}, v_addr} * 32'd582 + {{22{1'b0}}, h_addr}];
 
 endmodule
