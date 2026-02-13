@@ -32,7 +32,7 @@ module ex8(
 
   vmem my_vmem(
          .h_addr(h_addr),
-         .v_addr(v_addr[8:0]),
+         .v_addr(v_addr),
          .vga_data(vga_data)
        );
 
@@ -40,15 +40,15 @@ endmodule
 
 module vmem(
     input [9:0] h_addr,
-    input [8:0] v_addr,
+    input [9:0] v_addr,
     output [23:0] vga_data
   );
 
-  reg [23:0] vga_mem [524287:0];
+  reg [23:0] vga_mem [1048575:0];
 
   initial
     begin
-      $readmemh("/home/wiki/ysyx/npc/ex8/resource/picture.hex", vga_mem);
+      $readmemh("/home/wiki/ysyx/npc/ex8/resource/ysyx.hex", vga_mem);
     end
 
   assign vga_data = vga_mem[{h_addr, v_addr}];
