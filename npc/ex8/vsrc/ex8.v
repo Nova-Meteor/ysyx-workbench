@@ -48,7 +48,7 @@ module vmem(
 
   initial
     begin
-      $readmemh("resource/picture.hex", vga_mem);
+      $readmemh("/home/wiki/ysyx/npc/ex8/resource/picture.hex", vga_mem);
     end
 
   assign vga_data = vga_mem[{h_addr, v_addr}];
