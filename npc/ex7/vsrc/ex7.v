@@ -1,6 +1,6 @@
 module ex7(
     input clk,
-    input resetn,
+    input rst,
     input ps2_clk,
     input ps2_data,
     output VGA_CLK,
@@ -14,7 +14,7 @@ module ex7(
 
   ps2_keyboard my_kbd(
                  .clk(clk),
-                 .resetn(resetn),
+                 .resetn(~rst),
                  .ps2_clk(ps2_clk),
                  .ps2_data(ps2_data),
                  .out_code(kbd_data),
@@ -33,7 +33,7 @@ module ex7(
 
   always @(posedge clk)
     begin
-      if (!resetn)
+      if (rst)
         begin
           state <= STATE_IDLE;
           cur_scancode <= 8'h00;
