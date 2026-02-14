@@ -6,10 +6,11 @@ module cpu(
 
   reg [3:0] pc;
   reg [7:0] inst;
-  reg [7:0] rf [3:0];
 
-  // 指令存储器 (IMEM)
-  // 放入你提供的汇编机器码
+  // 核心改动 1：手动拆解寄存器堆，避免综合器产生奇怪的索引逻辑
+  reg [7:0] rf0, rf1, rf2, rf3;
+
+  // 指令存储器 (IMEM) 部分保持不变
   always @(*)
     begin
       case(pc)
@@ -34,7 +35,7 @@ module cpu(
       endcase
     end
 
-  // 译码
+  // 译码逻辑保持不变
   wire [1:0] op   = inst[7:6];
   wire [1:0] rd   = inst[5:4];
   wire [1:0] rs1  = inst[3:2];
@@ -42,41 +43,59 @@ module cpu(
   wire [3:0] imm  = inst[3:0];
   wire [3:0] addr = inst[5:2];
 
-  always @(posedge clk or posedge rst)
+  // 辅助逻辑：读取寄存器堆 (组合逻辑 MUX)
+  wire [7:0] rf_rs1_val = (rs1 == 2'd0) ? rf0 : (rs1 == 2'd1) ? rf1 : (rs1 == 2'd2) ? rf2 : rf3;
+  wire [7:0] rf_rs2_val = (rs2 == 2'd0) ? rf0 : (rs2 == 2'd1) ? rf1 : (rs2 == 2'd2) ? rf2 : rf3;
+
+  // 核心改动 2：将异步复位改为物理设计更友好的“同步复位”风格
+  // 并且所有写操作都基于全局 clk
+  always @(posedge clk)
     begin
       if (rst)
         begin
-          pc <= 4'h0;
-          rf[0] <= 8'h0;
-          rf[1] <= 8'h0;
-          rf[2] <= 8'h0;
-          rf[3] <= 8'h0;
+          pc  <= 4'h0;
+          rf0 <= 8'h0;
+          rf1 <= 8'h0;
+          rf2 <= 8'h0;
+          rf3 <= 8'h0;
           out_val <= 8'h0;
         end
       else
         begin
+          // 默认 PC 加 1
+          pc <= pc + 4'h1;
+
           case(op)
             2'b00:
               begin // add rd, rs1, rs2
-                rf[rd] <= rf[rs1] + rf[rs2];
-                pc <= pc + 1;
+                if (rd == 2'd0)
+                  rf0 <= rf_rs1_val + rf_rs2_val;
+                if (rd == 2'd1)
+                  rf1 <= rf_rs1_val + rf_rs2_val;
+                if (rd == 2'd2)
+                  rf2 <= rf_rs1_val + rf_rs2_val;
+                if (rd == 2'd3)
+                  rf3 <= rf_rs1_val + rf_rs2_val;
               end
             2'b01:
               begin // out rs2
-                out_val <= rf[rs2];
-                pc <= pc + 1;
+                out_val <= rf_rs2_val;
               end
             2'b10:
               begin // li rd, imm
-                rf[rd] <= {4'b0, imm};
-                pc <= pc + 1;
+                if (rd == 2'd0)
+                  rf0 <= {4'b0, imm};
+                if (rd == 2'd1)
+                  rf1 <= {4'b0, imm};
+                if (rd == 2'd2)
+                  rf2 <= {4'b0, imm};
+                if (rd == 2'd3)
+                  rf3 <= {4'b0, imm};
               end
             2'b11:
               begin // bner0 rs2, addr
-                if (rf[0] != rf[rs2])
+                if (rf0 != rf_rs2_val)
                   pc <= addr;
-                else
-                  pc <= pc + 1;
               end
           endcase
         end
