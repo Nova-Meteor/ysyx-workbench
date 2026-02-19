@@ -1,8 +1,8 @@
-cmd_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o := unused
+cmd_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o := unused
 
-source_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o := src/utils/disasm.c
+source_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o := src/utils/disasm.c
 
-deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o := \
+deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o := \
     $(wildcard include/config/isa/x86.h) \
     $(wildcard include/config/isa/mips32.h) \
     $(wildcard include/config/isa/riscv.h) \
@@ -28,15 +28,15 @@ deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils
   tools/capstone/repo/include/capstone/bpf.h \
   tools/capstone/repo/include/capstone/sh.h \
   tools/capstone/repo/include/capstone/tricore.h \
-  /home/wiki/ysyx-workbench/nemu/include/common.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/common.h \
     $(wildcard include/config/target/am.h) \
     $(wildcard include/config/mbase.h) \
     $(wildcard include/config/msize.h) \
-  /home/wiki/ysyx-workbench/nemu/include/macro.h \
-  /home/wiki/ysyx-workbench/nemu/include/debug.h \
-  /home/wiki/ysyx-workbench/nemu/include/utils.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/macro.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/debug.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/utils.h \
     $(wildcard include/config/target/native/elf.h) \
 
-/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o: $(deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o)
+/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o: $(deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o)
 
-$(deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o):
+$(deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/disasm.o):

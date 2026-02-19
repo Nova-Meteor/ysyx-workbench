@@ -1,31 +1,31 @@
-cmd_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o := unused
+cmd_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o := unused
 
-source_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o := src/cpu/difftest/dut.c
+source_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o := src/cpu/difftest/dut.c
 
-deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o := \
+deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o := \
     $(wildcard include/config/difftest.h) \
-  /home/wiki/ysyx-workbench/nemu/include/isa.h \
-  /home/wiki/ysyx-workbench/nemu/src/isa/riscv32/include/isa-def.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/isa.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/src/isa/riscv32/include/isa-def.h \
     $(wildcard include/config/rve.h) \
     $(wildcard include/config/rv64.h) \
-  /home/wiki/ysyx-workbench/nemu/include/common.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/common.h \
     $(wildcard include/config/target/am.h) \
     $(wildcard include/config/mbase.h) \
     $(wildcard include/config/msize.h) \
     $(wildcard include/config/isa64.h) \
-  /home/wiki/ysyx-workbench/nemu/include/macro.h \
-  /home/wiki/ysyx-workbench/nemu/include/debug.h \
-  /home/wiki/ysyx-workbench/nemu/include/utils.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/macro.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/debug.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/utils.h \
     $(wildcard include/config/target/native/elf.h) \
-  /home/wiki/ysyx-workbench/nemu/include/cpu/cpu.h \
-  /home/wiki/ysyx-workbench/nemu/include/memory/paddr.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/cpu/cpu.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/memory/paddr.h \
     $(wildcard include/config/pc/reset/offset.h) \
-  /home/wiki/ysyx-workbench/nemu/include/difftest-def.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/difftest-def.h \
     $(wildcard include/config/isa/x86.h) \
     $(wildcard include/config/isa/mips32.h) \
     $(wildcard include/config/isa/riscv.h) \
     $(wildcard include/config/isa/loongarch32r.h) \
 
-/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o: $(deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o)
+/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o: $(deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o)
 
-$(deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o):
+$(deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/cpu/difftest/dut.o):

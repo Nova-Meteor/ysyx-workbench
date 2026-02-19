@@ -1,18 +1,18 @@
-cmd_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o := unused
+cmd_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o := unused
 
-source_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o := src/utils/state.c
+source_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o := src/utils/state.c
 
-deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o := \
-  /home/wiki/ysyx-workbench/nemu/include/utils.h \
+deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o := \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/utils.h \
     $(wildcard include/config/target/native/elf.h) \
-  /home/wiki/ysyx-workbench/nemu/include/common.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/common.h \
     $(wildcard include/config/target/am.h) \
     $(wildcard include/config/mbase.h) \
     $(wildcard include/config/msize.h) \
     $(wildcard include/config/isa64.h) \
-  /home/wiki/ysyx-workbench/nemu/include/macro.h \
-  /home/wiki/ysyx-workbench/nemu/include/debug.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/macro.h \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/debug.h \
 
-/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o: $(deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o)
+/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o: $(deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o)
 
-$(deps_/home/wiki/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o):
+$(deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/utils/state.o):
