@@ -133,32 +133,41 @@ static int cmd_info(char *args) {
 
 static int cmd_x(char *args) {
   if (args == NULL) {
-    printf("Usage: x N EXPR\n");
+    printf("Usage: x N [p:]EXPR\n");
+    printf("  x N EXPR     - scan virtual memory\n");
+    printf("  x N p:EXPR   - scan physical memory\n");
     return 0;
   }
 
   int n;
-  vaddr_t addr;
+  paddr_t addr;
+  bool is_physical = false;
   char *arg1 = strtok(args, " ");
   char *arg2 = strtok(NULL, " ");
 
   if (arg1 == NULL || arg2 == NULL) {
-    printf("Usage: x N EXPR\n");
+    printf("Usage: x N [p:]EXPR\n");
     return 0;
   }
 
   sscanf(arg1, "%d", &n);
+
+  /* 检查是否是物理地址 (p:前缀) */
+  if (arg2[0] == 'p' && arg2[1] == ':') {
+    is_physical = true;
+    arg2 += 2;
+  }
+
   sscanf(arg2, "%x", &addr);
 
   for (int i = 0; i < n; i++) {
-    vaddr_t cur_addr = addr + i * 4;
-    if (!in_pmem(cur_addr)) {
-      printf("0x%08x: address out of bound [" FMT_PADDR ", " FMT_PADDR "]\n",
-             cur_addr, PMEM_LEFT, PMEM_RIGHT);
-      continue;
+    word_t data;
+    if (is_physical) {
+      data = paddr_read(addr + i * 4, 4);
+    } else {
+      data = vaddr_read(addr + i * 4, 4);
     }
-    word_t data = vaddr_read(cur_addr, 4);
-    printf("0x%08x: 0x%08x\n", cur_addr, data);
+    printf("0x%08x: 0x%08x\n", addr + i * 4, data);
   }
 
   return 0;
