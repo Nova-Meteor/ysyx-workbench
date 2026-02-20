@@ -57,6 +57,8 @@ static int cmd_help(char *args);
 
 static int cmd_si(char *args);
 
+static int cmd_info(char *args);
+
 static struct {
   const char *name;
   const char *description;
@@ -66,6 +68,7 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "si", "Step into one instruction", cmd_si },
+  { "info", "Display information about the program being debugged", cmd_info },
 
   /* TODO: Add more commands */
 
@@ -102,6 +105,24 @@ static int cmd_si(char *args) {
     sscanf(args, "%d", &n);
   }
   cpu_exec(n);
+  return 0;
+}
+
+static int cmd_info(char *args) {
+  if (args == NULL) {
+    printf("Usage: info [r|w]\n");
+    return 0;
+  }
+
+  if (strcmp(args, "r") == 0) {
+    isa_reg_display();
+  }
+  // else if (strcmp(args, "w") == 0) {
+  //   wp_display();
+  // }
+  else {
+    printf("Unknown info command '%s'\n", args);
+  }
   return 0;
 }
 
