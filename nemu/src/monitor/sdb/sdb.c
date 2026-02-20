@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <cpu/cpu.h>
+#include <memory/vaddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
@@ -59,6 +60,8 @@ static int cmd_si(char *args);
 
 static int cmd_info(char *args);
 
+static int cmd_x(char *args);
+
 static struct {
   const char *name;
   const char *description;
@@ -69,6 +72,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
   { "si", "Step into one instruction", cmd_si },
   { "info", "Display information about the program being debugged", cmd_info },
+  { "x", "Scan the memory", cmd_x },
 
   /* TODO: Add more commands */
 
@@ -123,6 +127,33 @@ static int cmd_info(char *args) {
   else {
     printf("Unknown info command '%s'\n", args);
   }
+  return 0;
+}
+
+static int cmd_x(char *args) {
+  if (args == NULL) {
+    printf("Usage: x N EXPR\n");
+    return 0;
+  }
+
+  int n;
+  vaddr_t addr;
+  char *arg1 = strtok(args, " ");
+  char *arg2 = strtok(NULL, " ");
+
+  if (arg1 == NULL || arg2 == NULL) {
+    printf("Usage: x N EXPR\n");
+    return 0;
+  }
+
+  sscanf(arg1, "%d", &n);
+  sscanf(arg2, "%x", &addr);
+
+  for (int i = 0; i < n; i++) {
+    word_t data = vaddr_read(addr + i * 4, 4);
+    printf("0x%08x: 0x%08x\n", addr + i * 4, data);
+  }
+
   return 0;
 }
 
