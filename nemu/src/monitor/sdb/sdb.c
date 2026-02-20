@@ -15,7 +15,6 @@
 
 #include <isa.h>
 #include <cpu/cpu.h>
-#include <memory/paddr.h>
 #include <memory/vaddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -133,40 +132,25 @@ static int cmd_info(char *args) {
 
 static int cmd_x(char *args) {
   if (args == NULL) {
-    printf("Usage: x N [p:]EXPR\n");
-    printf("  x N EXPR     - scan virtual memory\n");
-    printf("  x N p:EXPR   - scan physical memory\n");
+    printf("Usage: x N EXPR\n");
     return 0;
   }
 
   int n;
-  paddr_t addr;
-  bool is_physical = false;
+  vaddr_t addr;
   char *arg1 = strtok(args, " ");
   char *arg2 = strtok(NULL, " ");
 
   if (arg1 == NULL || arg2 == NULL) {
-    printf("Usage: x N [p:]EXPR\n");
+    printf("Usage: x N EXPR\n");
     return 0;
   }
 
   sscanf(arg1, "%d", &n);
-
-  /* 检查是否是物理地址 (p:前缀) */
-  if (arg2[0] == 'p' && arg2[1] == ':') {
-    is_physical = true;
-    arg2 += 2;
-  }
-
   sscanf(arg2, "%x", &addr);
 
   for (int i = 0; i < n; i++) {
-    word_t data;
-    if (is_physical) {
-      data = paddr_read(addr + i * 4, 4);
-    } else {
-      data = vaddr_read(addr + i * 4, 4);
-    }
+    word_t data = vaddr_read(addr + i * 4, 4);
     printf("0x%08x: 0x%08x\n", addr + i * 4, data);
   }
 
