@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <cpu/cpu.h>
+#include <memory/paddr.h>
 #include <memory/vaddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -150,8 +151,14 @@ static int cmd_x(char *args) {
   sscanf(arg2, "%x", &addr);
 
   for (int i = 0; i < n; i++) {
-    word_t data = vaddr_read(addr + i * 4, 4);
-    printf("0x%08x: 0x%08x\n", addr + i * 4, data);
+    vaddr_t cur_addr = addr + i * 4;
+    if (!in_pmem(cur_addr)) {
+      printf("0x%08x: address out of bound [" FMT_PADDR ", " FMT_PADDR "]\n",
+             cur_addr, PMEM_LEFT, PMEM_RIGHT);
+      continue;
+    }
+    word_t data = vaddr_read(cur_addr, 4);
+    printf("0x%08x: 0x%08x\n", cur_addr, data);
   }
 
   return 0;
