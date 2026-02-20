@@ -54,12 +54,6 @@ void reg_test() {
 }
 
 void isa_reg_display() {
-  int i;
-  for (i = R_EAX; i <= R_EDI; i ++) {
-    printf("%s: 0x%08x  ", regsl[i], reg_l(i));
-    if ((i - R_EAX) % 4 == 3) { printf("\n"); }
-  }
-  printf("pc: 0x%08x\n", cpu.pc);
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
