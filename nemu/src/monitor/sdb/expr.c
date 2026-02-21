@@ -126,9 +126,9 @@ static bool make_token(char *e) {
               tokens[nr_token - 1].type == '/' ||
               tokens[nr_token - 1].type == '(' ||
               tokens[nr_token - 1].type == TK_NEG) {
-            rules[i].token_type = TK_NEG;
+            rules[nr_token].token_type = TK_NEG;
           } else {
-            rules[i].token_type = '-';
+            rules[nr_token].token_type = '-';
           }
         } else {
           tokens[nr_token].type = rules[i].token_type;
