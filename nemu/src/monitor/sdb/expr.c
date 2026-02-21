@@ -13,6 +13,7 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
+#include <stdint.h>
 #include <isa.h>
 
 /* We use the POSIX regex functions to process regular expressions.
@@ -134,6 +135,119 @@ static bool make_token(char *e) {
   return true;
 }
 
+static bool check_parentheses(int p, int q) {
+  if (tokens[p].type != '(' || tokens[q].type != ')') {
+    return false;
+  }
+  
+  // 检查括号是否匹配
+  int cnt = 0;
+  for (int i = p; i <= q; i++) {
+    if (tokens[i].type == '(') cnt++;
+    else if (tokens[i].type == ')') cnt--;
+    
+    // 如果在到达q之前括号就匹配完了，说明最外层括号不匹配
+    if (cnt == 0 && i < q) return false;
+  }
+  
+  return cnt == 0;
+}
+
+static int get_priority(int op) {
+  switch (op) {
+    case '+':
+    case '-': return 1;
+    case '*':
+    case '/': return 2;
+    default: return 0;
+  }
+}
+
+static uint32_t eval(int p, int q, bool *success) {
+  *success = true;
+  
+  if (p > q) {
+    // 空表达式，错误
+    *success = false;
+    return 0;
+  }
+  
+  else if (p == q) {
+    // 单个token，应该是数字
+    if (tokens[p].type != TK_NUM) {
+      *success = false;
+      return 0;
+    }
+    return atoi(tokens[p].str);
+  }
+  
+  else if (check_parentheses(p, q)) {
+    // 被括号包围，去掉括号递归
+    return eval(p + 1, q - 1, success);
+  }
+  
+  else {
+    // 找主运算符（优先级最低，且在括号外的）
+    int op_pos = -1;
+    int min_priority = 3;  // 比所有运算符优先级都高
+    
+    for (int i = p; i <= q; i++) {
+      // 跳过括号内的内容
+      if (tokens[i].type == '(') {
+        int cnt = 1;
+        i++;
+        while (i <= q && cnt > 0) {
+          if (tokens[i].type == '(') cnt++;
+          else if (tokens[i].type == ')') cnt--;
+          i++;
+        }
+        i--;  // 回退一位，因为for循环会i++
+        continue;
+      }
+      
+      // 只考虑运算符
+      if (tokens[i].type == '+' || tokens[i].type == '-' ||
+          tokens[i].type == '*' || tokens[i].type == '/') {
+        int priority = get_priority(tokens[i].type);
+        // 优先级更低，或同级但靠右（结合性从右到左时改为 >）
+        if (priority <= min_priority) {
+          min_priority = priority;
+          op_pos = i;
+        }
+      }
+    }
+    
+    if (op_pos == -1) {
+      // 没找到主运算符，表达式不合法
+      *success = false;
+      return 0;
+    }
+    
+    // 递归求左右子表达式
+    uint32_t val1 = eval(p, op_pos - 1, success);
+    if (!*success) return 0;
+    
+    uint32_t val2 = eval(op_pos + 1, q, success);
+    if (!*success) return 0;
+    
+    // 根据主运算符计算结果
+    switch (tokens[op_pos].type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/': 
+        if (val2 == 0) {
+          printf("Error: division by zero\n");
+          *success = false;
+          return 0;
+        }
+        return val1 / val2;
+      default: 
+        *success = false;
+        return 0;
+    }
+  }
+}
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
@@ -142,7 +256,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  *success = true;
+  uint32_t result = eval(0, nr_token - 1, success);
 
-  return 0;
+  return result;
 }
