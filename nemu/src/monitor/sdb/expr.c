@@ -26,6 +26,7 @@ enum {
 
   /* TODO: Add more token types */
   TK_NUM,
+  TK_NEG,
 };
 
 static struct rule {
@@ -117,7 +118,22 @@ static bool make_token(char *e) {
           return false;
         }
 
-        tokens[nr_token].type = rules[i].token_type;
+        if (rules[i].token_type == '-') {
+          if (nr_token == 0 ||
+              tokens[nr_token - 1].type == '+' ||
+              tokens[nr_token - 1].type == '-' ||
+              tokens[nr_token - 1].type == '*' ||
+              tokens[nr_token - 1].type == '/' ||
+              tokens[nr_token - 1].type == '(' ||
+              tokens[nr_token - 1].type == TK_NEG) {
+            rules[i].token_type = TK_NEG;
+          } else {
+            rules[i].token_type = '-';
+          }
+        } else {
+          tokens[nr_token].type = rules[i].token_type;
+        }
+
         strncpy(tokens[nr_token].str, substr_start, substr_len);
         tokens[nr_token].str[substr_len] = '\0';
 
@@ -159,6 +175,7 @@ static int get_priority(int op) {
     case '-': return 1;
     case '*':
     case '/': return 2;
+    case TK_NEG: return 3;
     default: return 0;
   }
 }
@@ -189,7 +206,7 @@ static uint32_t eval(int p, int q, bool *success) {
   else {
     // 找主运算符（优先级最低，且在括号外的）
     int op_pos = -1;
-    int min_priority = 3;  // 比所有运算符优先级都高
+    int min_priority = 4;  // 比所有运算符优先级都高
     
     for (int i = p; i <= q; i++) {
       // 跳过括号内的内容
@@ -205,15 +222,11 @@ static uint32_t eval(int p, int q, bool *success) {
         continue;
       }
       
-      // 只考虑运算符
-      if (tokens[i].type == '+' || tokens[i].type == '-' ||
-          tokens[i].type == '*' || tokens[i].type == '/') {
-        int priority = get_priority(tokens[i].type);
-        // 优先级更低，或同级但靠右（结合性从右到左时改为 >）
-        if (priority <= min_priority) {
-          min_priority = priority;
-          op_pos = i;
-        }
+      int priority = get_priority(tokens[i].type);
+      // 优先级更低，或同级但靠右（结合性从右到左时改为 >）
+      if (priority <= min_priority) {
+        min_priority = priority;
+        op_pos = i;
       }
     }
     
@@ -222,7 +235,17 @@ static uint32_t eval(int p, int q, bool *success) {
       *success = false;
       return 0;
     }
+
+    int op_type = tokens[op_pos].type;
+
+    // 单目运算符，只有右操作数
+    if (op_type == TK_NEG) {
+      uint32_t val = eval(op_pos + 1, q, success);
+      if (!*success) return 0;
+      return -val;
+    }
     
+    // 双目运算符
     // 递归求左右子表达式
     uint32_t val1 = eval(p, op_pos - 1, success);
     if (!*success) return 0;
@@ -231,7 +254,7 @@ static uint32_t eval(int p, int q, bool *success) {
     if (!*success) return 0;
     
     // 根据主运算符计算结果
-    switch (tokens[op_pos].type) {
+    switch (op_type) {
       case '+': return val1 + val2;
       case '-': return val1 - val2;
       case '*': return val1 * val2;
