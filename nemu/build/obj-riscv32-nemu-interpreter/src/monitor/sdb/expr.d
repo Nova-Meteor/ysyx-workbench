@@ -16,6 +16,7 @@ deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv
   /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/debug.h \
   /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/utils.h \
     $(wildcard include/config/target/native/elf.h) \
+  /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/include/memory/vaddr.h \
 
 /media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/monitor/sdb/expr.o: $(deps_/media/wiki/新加卷/Code/一生一芯/ysyx-workbench/nemu/build/obj-riscv32-nemu-interpreter/src/monitor/sdb/expr.o)
 

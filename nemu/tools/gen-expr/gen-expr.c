@@ -47,8 +47,8 @@ static void gen(char c) {
 static void gen_num() {
   uint32_t num = choose(100);
   char num_str[16];
-  sprintf(num_str, "%u", num);
-  
+  sprintf(num_str, "%uU", num);  // 添加 U 后缀，强制使用 unsigned int
+
   int len = strlen(num_str);
   if (buf_pos + len < sizeof(buf) - 1) {
     strcpy(buf + buf_pos, num_str);
@@ -114,7 +114,7 @@ static void gen_expr(int depth) {
         // 右操作数必须是非零数字（简化：直接生成1-99的非零数）
         uint32_t num = choose(99) + 1;  // 1~99
         char num_str[16];
-        sprintf(num_str, "%u", num);
+        sprintf(num_str, "%uU", num);  // 添加 U 后缀
         int len = strlen(num_str);
         if (buf_pos + len < sizeof(buf) - 1) {
           strcpy(buf + buf_pos, num_str);
@@ -166,8 +166,8 @@ int main(int argc, char *argv[]) {
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
-    int result;
-    ret = fscanf(fp, "%d", &result);
+    unsigned int result;
+    ret = fscanf(fp, "%u", &result);
     pclose(fp);
 
     printf("%u %s\n", result, buf);
