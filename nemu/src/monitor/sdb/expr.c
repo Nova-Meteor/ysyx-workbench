@@ -223,7 +223,7 @@ static uint32_t eval(int p, int q, bool *success) {
       
       int priority = get_priority(tokens[i].type);
       // 优先级更低，或同级但靠右（结合性从右到左时改为 >）
-      if (priority <= min_priority) {
+      if (priority > 0 && priority <= min_priority) {
         min_priority = priority;
         op_pos = i;
       }
