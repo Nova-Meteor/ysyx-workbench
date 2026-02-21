@@ -24,7 +24,7 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-
+  TK_NUM,
 };
 
 static struct rule {
@@ -38,6 +38,15 @@ static struct rule {
 
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
+  {"-", '-'},           // minus
+  {"\\*", '*'},         // multiply
+  {"/", '/'},           // divide
+
+  {"\\(", '('},         // left parenthesis
+  {"\\)", ')'},         // right parenthesis
+
+  {"[0-9]+", TK_NUM},   // numbers
+
   {"==", TK_EQ},        // equal
 };
 
@@ -93,11 +102,25 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-
-        switch (rules[i].token_type) {
-          default: TODO();
+        if (rules[i].token_type == TK_NOTYPE) {
+          break;
         }
 
+        if (nr_token >= ARRLEN(tokens)) {
+          printf("Error: too many tokens (max %d)\n", ARRLEN(tokens));
+          return false;
+        }
+
+        if (substr_len >= sizeof(tokens[nr_token].str)) {
+          printf("Error: token too long (max %ld)\n", sizeof(tokens[nr_token].str) - 1);
+          return false;
+        }
+
+        tokens[nr_token].type = rules[i].token_type;
+        strncpy(tokens[nr_token].str, substr_start, substr_len);
+        tokens[nr_token].str[substr_len] = '\0';
+
+        nr_token ++;
         break;
       }
     }
