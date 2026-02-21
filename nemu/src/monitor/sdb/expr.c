@@ -126,7 +126,8 @@ static bool make_token(char *e) {
               tokens[nr_token - 1].type == '-' ||
               tokens[nr_token - 1].type == '*' ||
               tokens[nr_token - 1].type == '/' ||
-              tokens[nr_token - 1].type == '(') {
+              tokens[nr_token - 1].type == '(' ||
+              tokens[nr_token - 1].type == TK_NEG) {
             tokens[nr_token].type = TK_NEG;  // 一元负号
           } else {
             tokens[nr_token].type = '-';     // 二元减号
