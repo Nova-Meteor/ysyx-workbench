@@ -62,6 +62,8 @@ static int cmd_info(char *args);
 
 static int cmd_x(char *args);
 
+static int cmd_p(char *args);
+
 static struct {
   const char *name;
   const char *description;
@@ -73,6 +75,7 @@ static struct {
   { "si", "Step into one instruction", cmd_si },
   { "info", "Display information about the program being debugged", cmd_info },
   { "x", "Scan the memory", cmd_x },
+  { "p", "Evaluate an expression", cmd_p },
 
   /* TODO: Add more commands */
 
@@ -152,6 +155,23 @@ static int cmd_x(char *args) {
   for (int i = 0; i < n; i++) {
     word_t data = vaddr_read(addr + i * 4, 4);
     printf("0x%08x: 0x%08x\n", addr + i * 4, data);
+  }
+
+  return 0;
+}
+
+static int cmd_p(char *args) {
+  if (args == NULL) {
+    printf("Usage: p EXPR\n");
+    return 0;
+  }
+
+  bool success;
+  word_t result = expr(args, &success);
+  if (success) {
+    printf("%s = 0x%08x\n", args, result);
+  } else {
+    printf("Failed to evaluate expression: %s\n", args);
   }
 
   return 0;
