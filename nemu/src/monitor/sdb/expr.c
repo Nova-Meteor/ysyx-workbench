@@ -190,12 +190,11 @@ static uint32_t eval(int p, int q, bool *success) {
   }
   
   else if (p == q) {
-    // 单个token，应该是数字
-    if (tokens[p].type != TK_NUM) {
-      *success = false;
-      return 0;
+    if (tokens[p].type == TK_NUM) {
+      return atoi(tokens[p].str);
     }
-    return atoi(tokens[p].str);
+    *success = false;
+    return 0;
   }
   
   else if (check_parentheses(p, q)) {
