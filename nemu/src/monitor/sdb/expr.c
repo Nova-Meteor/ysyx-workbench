@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <isa.h>
 
 /* We use the POSIX regex functions to process regular expressions.
@@ -119,16 +120,16 @@ static bool make_token(char *e) {
         }
 
         if (rules[i].token_type == '-') {
+          // 判断是一元负号还是二元减号
           if (nr_token == 0 ||
               tokens[nr_token - 1].type == '+' ||
               tokens[nr_token - 1].type == '-' ||
               tokens[nr_token - 1].type == '*' ||
               tokens[nr_token - 1].type == '/' ||
-              tokens[nr_token - 1].type == '(' ||
-              tokens[nr_token - 1].type == TK_NEG) {
-            rules[nr_token].token_type = TK_NEG;
+              tokens[nr_token - 1].type == '(') {
+            tokens[nr_token].type = TK_NEG;  // 一元负号
           } else {
-            rules[nr_token].token_type = '-';
+            tokens[nr_token].type = '-';     // 二元减号
           }
         } else {
           tokens[nr_token].type = rules[i].token_type;
@@ -203,10 +204,10 @@ static uint32_t eval(int p, int q, bool *success) {
   }
   
   else {
-    // 找主运算符（优先级最低，且在括号外的）
+    // 找主运算符（优先级最低，且在括号外的二元运算符）
     int op_pos = -1;
     int min_priority = 4;  // 比所有运算符优先级都高
-    
+
     for (int i = p; i <= q; i++) {
       // 跳过括号内的内容
       if (tokens[i].type == '(') {
@@ -220,16 +221,27 @@ static uint32_t eval(int p, int q, bool *success) {
         i--;  // 回退一位，因为for循环会i++
         continue;
       }
-      
+
+      // 跳过一元负号（前缀运算符不作为主运算符）
+      if (tokens[i].type == TK_NEG) {
+        continue;
+      }
+
       int priority = get_priority(tokens[i].type);
-      // 优先级更低，或同级但靠右（结合性从右到左时改为 >）
+      // 优先级更低，或同级但靠右
       if (priority > 0 && priority <= min_priority) {
         min_priority = priority;
         op_pos = i;
       }
     }
-    
+
+    // 如果没找到二元运算符，检查是否是一元负号表达式
     if (op_pos == -1) {
+      if (tokens[p].type == TK_NEG) {
+        uint32_t val = eval(p + 1, q, success);
+        if (!*success) return 0;
+        return -(int32_t)val;  // 转为有符号数取负
+      }
       // 没找到主运算符，表达式不合法
       *success = false;
       return 0;
@@ -237,34 +249,27 @@ static uint32_t eval(int p, int q, bool *success) {
 
     int op_type = tokens[op_pos].type;
 
-    // 单目运算符，只有右操作数
-    if (op_type == TK_NEG) {
-      uint32_t val = eval(op_pos + 1, q, success);
-      if (!*success) return 0;
-      return -val;
-    }
-    
     // 双目运算符
     // 递归求左右子表达式
     uint32_t val1 = eval(p, op_pos - 1, success);
     if (!*success) return 0;
-    
+
     uint32_t val2 = eval(op_pos + 1, q, success);
     if (!*success) return 0;
-    
+
     // 根据主运算符计算结果
     switch (op_type) {
       case '+': return val1 + val2;
       case '-': return val1 - val2;
       case '*': return val1 * val2;
-      case '/': 
+      case '/':
         if (val2 == 0) {
           printf("Error: division by zero\n");
           *success = false;
           return 0;
         }
         return val1 / val2;
-      default: 
+      default:
         *success = false;
         return 0;
     }
