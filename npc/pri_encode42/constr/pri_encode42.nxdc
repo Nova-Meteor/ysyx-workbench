@@ -1,0 +1,5 @@
+top=pri_encode42
+
+x (SW3, SW2, SW1, SW0)
+en (SW15)
+y (LD1, LD0)

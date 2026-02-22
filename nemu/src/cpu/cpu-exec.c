@@ -18,6 +18,9 @@
 #include <cpu/difftest.h>
 #include <locale.h>
 
+// 监视点检查函数声明
+bool wp_check();
+
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -38,6 +41,12 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+
+#ifdef CONFIG_WATCHPOINT
+  if (wp_check()) {
+    nemu_state.state = NEMU_STOP;
+  }
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
@@ -98,7 +107,7 @@ void assert_fail_msg() {
 
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {
-  g_print_step = (n < MAX_INST_TO_PRINT);
+  g_print_step = (n <= MAX_INST_TO_PRINT);
   switch (nemu_state.state) {
     case NEMU_END: case NEMU_ABORT: case NEMU_QUIT:
       printf("Program execution has ended. To restart the program, exit NEMU and run again.\n");

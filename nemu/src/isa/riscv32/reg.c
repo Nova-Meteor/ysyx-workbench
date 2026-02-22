@@ -24,8 +24,36 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
+  for (int i = 0; i < 32; i ++) {
+    printf("%s = " FMT_WORD "\n", regs[i], cpu.gpr[i]);
+  }
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
+  *success = false;
+
+  // 寄存器名以 $ 开头
+  if (s[0] != '$') {
+    return 0;
+  }
+
+  const char *reg_name = s + 1;  // 跳过 $
+
+  // 特殊处理 $pc
+  if (strcmp(reg_name, "pc") == 0) {
+    *success = true;
+    return cpu.pc;
+  }
+
+  // 遍历查找寄存器
+  for (int i = 0; i < 32; i++) {
+    // regs[0] = "$0", 其他没有 $ 前缀
+    if (strcmp(reg_name, regs[i]) == 0 ||
+        (i == 0 && strcmp(s, "$0") == 0)) {
+      *success = true;
+      return cpu.gpr[i];
+    }
+  }
+
   return 0;
 }

@@ -62,3 +62,26 @@ else
 # Include rules to build NEMU
 include $(NEMU_HOME)/scripts/native.mk
 endif
+
+# 代码统计相关目标
+.PHONY: count count-pa1 count-nonempty count-detail
+
+# 统计总行数（含空行）
+count:
+	@echo "=== nemu/ 目录代码统计 ==="
+	@echo "总计:"
+	@find $(NEMU_HOME)/ -type f \( -name "*.c" -o -name "*.h" \) | xargs wc -l | tail -1
+
+# 统计非空行数
+count-nonempty:
+	@echo "=== nemu/ 目录非空行统计 ==="
+	@find $(NEMU_HOME)/ -type f \( -name "*.c" -o -name "*.h" \) -exec grep -v "^[[:space:]]*$$" {} + | wc -l | awk '{print "非空行总数: " $$1}'
+
+# 统计 PA1 相对于 pa0 的增量
+count-pa1:
+	@echo "=== PA1 代码增量（相对于 pa0 分支）==="
+	@if git rev-parse --verify pa0 >/dev/null 2>&1; then \
+		git diff --numstat pa0 -- $(NEMU_HOME)/ | grep -E "\.(c|h)$$" | awk '{add+=$$1; del+=$$2} END {printf "新增: %d 行\n删除: %d 行\n净增: %d 行\n", add, del, add-del}'; \
+	else \
+		echo "错误: 不存在 pa0 分支"; \
+	fi

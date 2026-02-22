@@ -1,0 +1,5 @@
+top=decode24
+
+x (SW1, SW0)
+en (SW15)
+y (LD3, LD2, LD1, LD0)

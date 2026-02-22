@@ -31,8 +31,115 @@ static char *code_format =
 "  return 0; "
 "}";
 
+static int buf_pos = 0;
+
+static uint32_t choose(uint32_t n) {
+  return rand() % n;
+}
+
+static void gen(char c) {
+  if (buf_pos < sizeof(buf) - 1) {
+    buf[buf_pos++] = c;
+    buf[buf_pos] = '\0';
+  }
+}
+
+static void gen_num() {
+  uint32_t num = choose(100);
+  char num_str[16];
+  sprintf(num_str, "%uU", num);  // 添加 U 后缀，强制使用 unsigned int
+
+  int len = strlen(num_str);
+  if (buf_pos + len < sizeof(buf) - 1) {
+    strcpy(buf + buf_pos, num_str);
+    buf_pos += len;
+  }
+}
+
+static void gen_space() {
+  if (choose(2) == 0) return;  // 50%概率不加空格
+  int spaces = choose(3) + 1;   // 1~3个空格
+  for (int i = 0; i < spaces && buf_pos < sizeof(buf) - 1; i++) {
+    buf[buf_pos++] = ' ';
+  }
+  buf[buf_pos] = '\0';
+}
+
+// 递归生成表达式
+// 添加参数限制递归深度，防止栈溢出和buf溢出
+static void gen_expr(int depth) {
+  // 限制递归深度，强制终止
+  if (depth > 10) {
+    gen_num();
+    return;
+  }
+  
+  // 限制buf剩余空间，避免溢出
+  if (buf_pos > sizeof(buf) - 32) {
+    gen_num();
+    return;
+  }
+
+  switch (choose(3)) {
+    case 0:  // 生成数字
+      gen_space();
+      gen_num();
+      gen_space();
+      break;
+      
+    case 1:  // 生成括号表达式
+      gen_space();
+      gen('(');
+      gen_expr(depth + 1);
+      gen(')');
+      gen_space();
+      break;
+      
+    default: {  // 生成二元运算表达式
+      gen_space();
+
+      // 先生成左子表达式
+      gen_expr(depth + 1);
+
+      gen_space();
+
+      // 生成运算符（避免除法除零）
+      char op;
+      if (choose(4) == 0) {
+        // 25%概率生成除法，右操作数需要特殊处理
+        op = '/';
+        gen(op);
+        gen_space();
+
+        // 右操作数必须是非零数字（简化：直接生成1-99的非零数）
+        uint32_t num = choose(99) + 1;  // 1~99
+        char num_str[16];
+        sprintf(num_str, "%uU", num);  // 添加 U 后缀
+        int len = strlen(num_str);
+        if (buf_pos + len < sizeof(buf) - 1) {
+          strcpy(buf + buf_pos, num_str);
+          buf_pos += len;
+        }
+      } else {
+        // 75%概率生成非除法运算符
+        op = "+-*"[choose(3)];
+        gen(op);
+        gen_space();
+
+        // 生成右子表达式
+        gen_expr(depth + 1);
+      }
+
+      gen_space();
+      break;
+    }
+  }
+}
+
 static void gen_rand_expr() {
+  buf_pos = 0;
   buf[0] = '\0';
+  gen_expr(0);
 }
 
 int main(int argc, char *argv[]) {
@@ -59,8 +166,8 @@ int main(int argc, char *argv[]) {
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
-    int result;
-    ret = fscanf(fp, "%d", &result);
+    unsigned int result;
+    ret = fscanf(fp, "%u", &result);
     pclose(fp);
 
     printf("%u %s\n", result, buf);
