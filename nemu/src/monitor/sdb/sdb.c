@@ -24,6 +24,10 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+// 监视点相关函数声明
+int wp_add(char *expr_str);
+bool wp_remove(int no);
+void wp_list();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -64,6 +68,10 @@ static int cmd_x(char *args);
 
 static int cmd_p(char *args);
 
+static int cmd_w(char *args);
+
+static int cmd_d(char *args);
+
 static struct {
   const char *name;
   const char *description;
@@ -76,6 +84,8 @@ static struct {
   { "info", "Display information about the program being debugged", cmd_info },
   { "x", "Scan the memory", cmd_x },
   { "p", "Evaluate an expression", cmd_p },
+  { "w", "Set a watchpoint", cmd_w },
+  { "d", "Delete a watchpoint", cmd_d },
 
   /* TODO: Add more commands */
 
@@ -124,9 +134,9 @@ static int cmd_info(char *args) {
   if (strcmp(args, "r") == 0) {
     isa_reg_display();
   }
-  // else if (strcmp(args, "w") == 0) {
-  //   wp_display();
-  // }
+  else if (strcmp(args, "w") == 0) {
+    wp_list();
+  }
   else {
     printf("Unknown info command '%s'\n", args);
   }
@@ -172,6 +182,40 @@ static int cmd_p(char *args) {
     printf("%s = 0x%08x\n", args, result);
   } else {
     printf("Failed to evaluate expression: %s\n", args);
+  }
+
+  return 0;
+}
+
+static int cmd_w(char *args) {
+  if (args == NULL) {
+    printf("Usage: w EXPR\n");
+    return 0;
+  }
+
+  int no = wp_add(args);
+  if (no >= 0) {
+    printf("Watchpoint %d: %s\n", no, args);
+  } else {
+    printf("Failed to create watchpoint: invalid expression\n");
+  }
+
+  return 0;
+}
+
+static int cmd_d(char *args) {
+  if (args == NULL) {
+    printf("Usage: d N\n");
+    return 0;
+  }
+
+  int no;
+  sscanf(args, "%d", &no);
+
+  if (wp_remove(no)) {
+    printf("Deleted watchpoint %d\n", no);
+  } else {
+    printf("No watchpoint number %d\n", no);
   }
 
   return 0;
