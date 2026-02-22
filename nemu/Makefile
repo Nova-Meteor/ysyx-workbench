@@ -69,6 +69,9 @@ endif
 # 统计总行数（含空行）
 count:
 	@echo "=== nemu/ 目录代码统计 ==="
+	@echo "文件列表:"
+	@find $(NEMU_HOME)/ -type f \( -name "*.c" -o -name "*.h" \) | xargs wc -l
+	@echo ""
 	@echo "总计:"
 	@find $(NEMU_HOME)/ -type f \( -name "*.c" -o -name "*.h" \) | xargs wc -l | tail -1
 
