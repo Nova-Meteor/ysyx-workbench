@@ -117,10 +117,10 @@ void wp_list() {
     return;
   }
 
-  printf("Num     Value     What\n");
+  printf("Num       Value           What\n");
   WP *wp = head;
   while (wp != NULL) {
-    printf("%-8d0x%08x %s\n", wp->NO, wp->old_val, wp->expr);
+    printf("%-8d  0x%08x      %s\n", wp->NO, wp->old_val, wp->expr);
     wp = wp->next;
   }
 }
