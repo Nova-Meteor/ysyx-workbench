@@ -110,6 +110,16 @@ bool wp_remove(int no) {
   return false;  // 未找到该编号的监视点
 }
 
+// 检查节点是否在使用中
+static bool is_in_use(WP *wp) {
+  WP *p = head;
+  while (p != NULL) {
+    if (p == wp) return true;
+    p = p->next;
+  }
+  return false;
+}
+
 // 列出所有监视点
 void wp_list() {
   if (head == NULL) {
@@ -118,10 +128,11 @@ void wp_list() {
   }
 
   printf("Num       Value           What\n");
-  WP *wp = head;
-  while (wp != NULL) {
-    printf("%-8d  0x%08x      %s\n", wp->NO, wp->old_val, wp->expr);
-    wp = wp->next;
+  // 按 NO 顺序遍历 wp_pool
+  for (int i = 0; i < NR_WP; i++) {
+    if (is_in_use(&wp_pool[i])) {
+      printf("%-8d  0x%08x      %s\n", wp_pool[i].NO, wp_pool[i].old_val, wp_pool[i].expr);
+    }
   }
 }
 
