@@ -5,3 +5,19 @@
 [submodule "fceux-am"]
 	path = fceux-am
 	url = https://github.com/Nova-Meteor/fceux-am.git
+
+[submodule "iEDA"]
+	path = iEDA
+	url = https://github.com/Nova-Meteor/iEDA.git
+
+[submodule "nvboard"]
+	path = nvboard
+	url = https://github.com/Nova-Meteor/nvboard.git
+
+[submodule "verilator_basics"]
+	path = verilator_basics
+	url = https://github.com/Nova-Meteor/verilator_basics.git
+
+[submodule "yosys-sta"]
+	path = yosys-sta
+	url = https://github.com/Nova-Meteor/yosys-sta.git
