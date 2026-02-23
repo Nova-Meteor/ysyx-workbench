@@ -1,3 +1,7 @@
 [submodule "am-kernels"]
 	path = am-kernels
 	url = https://github.com/Nova-Meteor/am-kernels.git
+
+[submodule "fceux-am"]
+	path = fceux-am
+	url = https://github.com/Nova-Meteor/fceux-am.git
